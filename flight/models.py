@@ -41,7 +41,7 @@ class Flight(models.Model):
     first_fare = models.FloatField(null=True)
 
     def __str__(self):
-        return f"{self.id}: {self.origin} to {self.destination}"
+        return f"{self.origin} to {self.destination}"
 
 
 
