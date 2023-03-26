@@ -53,6 +53,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'capstone.middleware.SessionIdleTimeout',
 ]
 
 ROOT_URLCONF = 'capstone.urls'
@@ -130,6 +131,7 @@ STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 AUTH_USER_MODEL = 'flight.User'
+SESSION_IDLE_TIMEOUT = 10
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 15000
 
