@@ -5,7 +5,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/ico" href="/static/img/favicon.ico">
     <title>e-Ticket</title>
     <style>
         @page{
@@ -90,26 +89,26 @@
 <body>
     <nav>
         <div class="col logo" style="width: 50%;">
-            <!--<img src="{% static 'img/icon_logo.png' %}" width="45%">-->
-            <span style="color: rgb(225, 35, 35); font-weight: bold; font-size: 2.5em;">FLIGHT</span>
+            <img src="{% static 'img/icon_logo.png' %}" width="45%">
+            <span style="color: springgreen; font-weight: bold; font-size: 2.5em;">Aurora Aventures</span>
         </div>
         <div class="col header" style="width: 50%;">
             <span style="margin: auto 0 auto auto;">E-Ticket</span>
         </div>
     </nav>
-    <hr style="height: 1px; border: 0; background-color: grey;" noshade>
+    <hr style="height: 1px; border: 0; background-color: black;">
     <main style="padding: 10px;">
         <div style="margin: 15px auto;">
             <h3>Important information</h3>
             <ul style="padding-left: 50px;">
                 <li>
-                    This is your E-Ticket Iternary. You must bring it to the airport for check-in, and it is recommended you to retain a copy for your records.
+                    Here is your E-Ticket Itinerary. Please bring it with you to the airport for check-in and consider keeping a copy for your records.
                 </li>
                 <li>
-                    Each passenger travelling needs a printed copy of this document for immigrations, customs, airport security checks and duty free purchases.
+                    For immigration, customs, airport security checks, and duty-free purchases, every traveling passenger requires a printed copy of this document.
                 </li>
                 <li>
-                    Economy Class passengers should report to airline check-in desks 3 hours prior to departure of all flights. First and Business Class passengers should report to airline check-in desks not later than 1 hour prior to departure. Boarding for your flight begins at least 35 minutes before your scheduled departure time. Gates close 15 minutes prior to departure
+                    Passengers traveling in Economy Class must arrive at the airline check-in desks at least 3 hours before the departure time of all flights. First and Business Class passengers should check in at the airline desks no later than 1 hour prior to departure. Boarding for your flight commences at least 35 minutes before the scheduled departure time. The gates close 15 minutes before the departure time.
                 </li>
             </ul>
         </div>
@@ -119,7 +118,7 @@
                     <td style="width: 100%;">TICKET INFORMATION</td>
                 </tr>
             </table>
-            <table cellspacing='0' >
+            <table>
                 <tr class="tr-odd">
                     <th>TICKET REFERENCE</th>
                     <td>{{ticket1.ref_no | upper}}</td>
@@ -150,7 +149,7 @@
                     <td style="width: 100%;">PASSENGER INFORMATION</td>
                 </tr>
             </table>
-            <table cellspacing='0'>
+            <table>
                 <tr class="tr-odd">
                     <th>S NO.</th>
                     <th>PASSENGER NAME</th>
@@ -200,8 +199,8 @@
             </table>
             {% if ticket2 %}
                 <div>
-                    <hr style="height: .1px; border: 0; background-color: grey;" noshade>
-                    <table style="margin-top: 0;" cellspacing='0'>
+                    <hr style="height: .1px; border: 0; background-color: grey;">
+                    <table style="margin-top: 0;" >
                         <tr class="tr-odd">
                             <th>FLIGHT</th>
                             <th>DEPART/ARRIVE</th>
@@ -218,7 +217,7 @@
                             <td style="padding-left: 20px; width: 49%;">{{ticket2.flight.destination.airport | upper}} ({{ticket2.flight.destination.code | upper}})</td>
                         </tr>
                     </table>
-                    <hr style="height: .1px; border: 0; background-color: grey;" noshade>
+                    <hr style="height: .1px; border: 0; background-color: grey;">
                 </div>
             {% endif %}
             <!---->
@@ -247,7 +246,6 @@
             </table>
         </div>
     </main>
-    <p style="margin: 10px 0; font-size: .8em;">&#169;	 {{ current_year}} Flight Inc. All rights reserved.</p>
-    <!-- 30 Kgs Check-in, 7 Kgs Cabin-->
+    <p style="margin: 10px 0; font-size: .8em;">&#169;	 {{ current_year}} Aurora Adventures. All rights reserved.</p>
 </body>
 </html>
