@@ -16,13 +16,15 @@ from django.urls import reverse
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.views.decorators.csrf import csrf_exempt
-
+from django.contrib.auth import authenticate, login
+from django.shortcuts import render, HttpResponseRedirect, reverse
+from .forms import LoginForm
 from capstone.utils import render_to_pdf, createticket
 from flight.utils import createWeekDays, addPlaces, addDomesticFlights, addInternationalFlights
 # Fee and Surcharge variable
 from .constant import FEE
 from .models import *
-
+from .forms import ContactForm
 User = get_user_model()
 
 try:
@@ -79,25 +81,51 @@ def index(request):
         })
 
 
+# def login_view(request):
+#     if request.method == "POST":
+#         username = request.POST["username"]
+#         password = request.POST["password"]
+#         user = authenticate(request, username=username, password=password)
+#         if user is not None:
+#             login(request, user)
+#             return HttpResponseRedirect(reverse("index"))
+#
+#         else:
+#             return render(request, "flight/login.html", {
+#                 "message": "Invalid username and/or password."
+#             })
+#     else:
+#         if request.user.is_authenticated:
+#             return HttpResponseRedirect(reverse('index'))
+#         else:
+#             return render(request, "flight/login.html")
+
+
+
 def login_view(request):
     if request.method == "POST":
-        username = request.POST["username"]
-        password = request.POST["password"]
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return HttpResponseRedirect(reverse("index"))
-
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return HttpResponseRedirect(reverse("index"))
+            else:
+                message = "Invalid username and/or password."
         else:
-            return render(request, "flight/login.html", {
-                "message": "Invalid username and/or password."
-            })
+            message = "Please enter a valid username and password."
     else:
         if request.user.is_authenticated:
             return HttpResponseRedirect(reverse('index'))
         else:
-            return render(request, "flight/login.html")
-
+            form = LoginForm()
+            message = ""
+    return render(request, "flight/login.html", {
+        "form": form,
+        "message": message
+    })
 
 def register_view(request):
     if request.method == "POST":
@@ -533,23 +561,18 @@ def password_reset_request(request):
 
 def contact(request):
     if request.method == 'POST':
-        name = request.POST['name']
-        email = request.POST['email']
-        subject = request.POST['subject']
-        message = request.POST['message']
-        contact_us = Contact(name=name, email=email, subject=subject, message=message)
-        contact_us.save()
-        return render(request, 'flight/landingPage.html')
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            subject = form.cleaned_data['subject']
+            message = form.cleaned_data['message']
+            contact_us = Contact(name=name, email=email, subject=subject, message=message)
+            contact_us.save()
+            return render(request, 'flight/landingPage.html')
     else:
-        return render(request, 'flight/contact.html')
-
-def privacy_policy(request):
-    return render(request, 'flight/privacy-policy.html')
-
-
-def terms_and_conditions(request):
-    return render(request, 'flight/terms.html')
-
+        form = ContactForm()
+    return render(request, 'flight/contact.html', {'form': form})
 
 def about_us(request):
     return render(request, 'flight/about.html')
