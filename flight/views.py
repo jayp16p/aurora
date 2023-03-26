@@ -1,34 +1,28 @@
-from django.shortcuts import render, HttpResponse, HttpResponseRedirect, redirect
-from django.urls import reverse
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import authenticate, login, logout
-
-from datetime import datetime
 import math
-from .models import *
-from capstone.utils import render_to_pdf, createticket
 
-from django.shortcuts import render, redirect
-from django.core.mail import send_mail, BadHeaderError
-from django.http import HttpResponse
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.models import User
-from django.template.loader import render_to_string
-from django.db.models.query_utils import Q
-from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import default_token_generator
-from django.utils.encoding import force_bytes
-from django.db.models import Q
-from django.template.loader import render_to_string
 from django.core.mail import send_mail, BadHeaderError
+from django.db.models import Q
+from django.http import HttpResponse
+from django.http import JsonResponse
+from django.shortcuts import HttpResponseRedirect
+from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
-from django.contrib.auth.tokens import default_token_generator
+from django.views.decorators.csrf import csrf_exempt
+
+from capstone.utils import render_to_pdf, createticket
+from flight.utils import createWeekDays, addPlaces, addDomesticFlights, addInternationalFlights
 # Fee and Surcharge variable
 from .constant import FEE
-from flight.utils import createWeekDays, addPlaces, addDomesticFlights, addInternationalFlights
-from django.contrib.auth import get_user_model
+from .models import *
+
 User = get_user_model()
 
 try:
@@ -537,10 +531,17 @@ def password_reset_request(request):
     return render(request=request, template_name="flight/password_reset.html",
                   context={"password_reset_form": password_reset_form})
 
-
 def contact(request):
-    return render(request, 'flight/contact.html')
-
+    if request.method == 'POST':
+        name = request.POST['name']
+        email = request.POST['email']
+        subject = request.POST['subject']
+        message = request.POST['message']
+        contact_us = Contact(name=name, email=email, subject=subject, message=message)
+        contact_us.save()
+        return render(request, 'flight/landingPage.html')
+    else:
+        return render(request, 'flight/contact.html')
 
 def privacy_policy(request):
     return render(request, 'flight/privacy-policy.html')
