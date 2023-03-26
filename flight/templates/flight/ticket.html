@@ -24,7 +24,13 @@
             margin-bottom: 10px;
         }
         .logo{
-            display: flex;
+             display: flex;
+              margin: 20px; /* margin: 20px was off */
+              float: left;
+              height: 50px;
+              width: auto; /* correct proportions to specified height */
+              border-radius: 50%; /* makes it a circle */
+            {#display: inline-block;#}
         }
         .header{
             text-align: right;
@@ -89,8 +95,8 @@
 <body>
     <nav>
         <div class="col logo" style="width: 50%;">
-            <img src="{% static 'img/icon_logo.png' %}" width="45%">
-            <span style="color: springgreen; font-weight: bold; font-size: 2.5em;">Aurora Aventures</span>
+            <img src="C:\Users\Jay Patel\Dropbox\PC\Desktop\AuroraAdventures-main\flight\static\img\logopdf.png" width="45%">
+            <br><span style="color: black; font-weight: bold; font-size: 2.5em;">Aurora Aventures</span>
         </div>
         <div class="col header" style="width: 50%;">
             <span style="margin: auto 0 auto auto;">E-Ticket</span>
