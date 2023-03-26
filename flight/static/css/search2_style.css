@@ -111,7 +111,7 @@
 }
 .square-box{
     border: 1px solid grey;
-    border-radius: 5px;
+    border-radius: 15px;
     font-size: .6em;
     width: 23%;
     transition-duration: .2s;
@@ -123,8 +123,8 @@
     cursor: pointer;
 }
 .square-box.active{
-    background-color: #0075ff;
-    border-color: #0075ff;
+    background-color: #000000;
+    border-color: #0052ff;
     color: white;
 }
 .square-box img{
@@ -140,7 +140,7 @@
     background: none;
     border: none;
     outline: none;
-    color: blue;
+    color: #000000;
 }
 .btn-link:hover, .btn-link:focus, .btn-link:active{
     text-decoration: none;
@@ -312,7 +312,7 @@
     margin-top: 2px;
     display: flex;
     justify-content: space-between;
-    color: #808080;
+    color: #000000;
     font-size: .8em;
 }
 
