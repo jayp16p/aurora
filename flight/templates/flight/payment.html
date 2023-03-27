@@ -22,7 +22,7 @@
                 <div class="payment-details-input-box">
                     <form action="{% url 'payment' %}" method="POST">
                         {% csrf_token %}
-                        <!--<input type="hidden" name="payment_amount" value="{{fare}}">-->
+
                         <input type="hidden" name="ticket" value="{{ticket}}" required>
                         {% if ticket2 %}
                             <input type="hidden" name="ticket2" value="{{ticket2}}" required>
@@ -54,7 +54,7 @@
                             <div class="form-group">
                                 <label for="card_holder_name">CARD HOLDER'S NAME</label>
                                 <input type="text" name="cardHolderName" class="form-control" id="cardHolderName" placeholder="Enter name" required>
-                                <!--<small id="nameHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>-->
+
                             </div>
                         </div>
                         <div class="row expiry-cvv">
@@ -127,7 +127,7 @@
                                     <div class="form-group">
                                         <label for="cvv_number">CVV CODE</label>
                                         <input type="password" pattern="[0-9]*" class="form-control" placeholder="CVV" id="cvv_number" name="cvv" maxlength="3">    <!--onkeypress="return isNumericValue(event);"-->
-                                        <!--<small id="nameHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>-->
+
                                     </div>
                                 </div>
                             </div>

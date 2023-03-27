@@ -6,7 +6,6 @@ from flight.models import *
 import secrets
 from datetime import datetime, timedelta
 from xhtml2pdf import pisa
-
 from flight.constant import FEE
 
 def render_to_pdf(template_src, context_dict={}):
@@ -27,10 +26,9 @@ def createticket(user,passengers,passengerscount,flight1,flight_1date,flight_1cl
         ticket.passengers.add(passenger)
     ticket.flight = flight1
     ticket.flight_ddate = datetime(int(flight_1date.split('-')[2]),int(flight_1date.split('-')[1]),int(flight_1date.split('-')[0]))
-    ###################
     flight1ddate = datetime(int(flight_1date.split('-')[2]),int(flight_1date.split('-')[1]),int(flight_1date.split('-')[0]),flight1.depart_time.hour,flight1.depart_time.minute)
     flight1adate = (flight1ddate + flight1.duration)
-    ###################
+
     ticket.flight_adate = datetime(flight1adate.year,flight1adate.month,flight1adate.day)
     ffre = 0.0
     if flight_1class.lower() == 'first':
@@ -44,8 +42,8 @@ def createticket(user,passengers,passengerscount,flight1,flight_1date,flight_1cl
         ffre = flight1.economy_fare*int(passengerscount)
     ticket.other_charges = FEE
     if coupon:
-        ticket.coupon_used = coupon                     ##########Coupon
-    ticket.total_fare = ffre+FEE+0.0                    ##########Total(Including coupon)
+        ticket.coupon_used = coupon
+    ticket.total_fare = ffre+FEE+0.0
     ticket.seat_class = flight_1class.lower()
     ticket.status = 'PENDING'
     ticket.mobile = ('+'+countrycode+' '+mobile)

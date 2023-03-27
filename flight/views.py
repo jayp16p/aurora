@@ -1,7 +1,8 @@
 import math
 
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login
 from django.contrib.auth import get_user_model
+from django.contrib.auth import logout
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
@@ -9,27 +10,20 @@ from django.core.mail import send_mail, BadHeaderError
 from django.db.models import Q
 from django.http import HttpResponse
 from django.http import JsonResponse
-from django.shortcuts import HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
+from django.shortcuts import render, HttpResponseRedirect, reverse
 from django.template.loader import render_to_string
-from django.urls import reverse
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import authenticate, login
-from django.shortcuts import render, HttpResponseRedirect, reverse
-from .forms import LoginForm
+
 from capstone.utils import render_to_pdf, createticket
-# Fee and Surcharge variable
 from .constant import FEE
-from .models import *
 from .forms import ContactForm
+from .forms import LoginForm
+from .models import *
+
 User = get_user_model()
-
-
-
-# Create your views here.
-
 
 def login_view(request):
     if request.method == "POST":
@@ -461,7 +455,7 @@ def password_reset_request(request):
                     }
                     email = render_to_string(email_template_name, c)
                     try:
-                        send_mail(subject, email, 'wickramv@uwindsor.ca', [user.email], fail_silently=False)
+                        send_mail(subject, email, 'mv@uwindsor.ca', [user.email], fail_silently=False)
                         print('Email sent')
                     except BadHeaderError as e:
                         print('Error: {}'.format(e))
@@ -491,7 +485,6 @@ def contact(request):
 
 def about_us(request):
     return render(request, 'flight/about.html')
-
 
 def home(request):
     return render(request, 'flight/landingPage.html')
