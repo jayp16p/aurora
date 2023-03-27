@@ -30,40 +30,6 @@ User = get_user_model()
 
 # Create your views here.
 
-def index(request):
-    min_date = f"{datetime.now().date().year}-{datetime.now().date().month}-{datetime.now().date().day}"
-    max_date = f"{datetime.now().date().year if (datetime.now().date().month + 3) <= 12 else datetime.now().date().year + 1}-{(datetime.now().date().month + 3) if (datetime.now().date().month + 3) <= 12 else (datetime.now().date().month + 3 - 12)}-{datetime.now().date().day}"
-    if request.method == 'POST':
-        origin = request.POST.get('Origin')
-        destination = request.POST.get('Destination')
-        depart_date = request.POST.get('DepartDate')
-        seat = request.POST.get('SeatClass')
-        trip_type = request.POST.get('TripType')
-        if (trip_type == '1'):
-            return render(request, 'flight/index.html', {
-                'origin': origin,
-                'destination': destination,
-                'depart_date': depart_date,
-                'seat': seat.lower(),
-                'trip_type': trip_type
-            })
-        elif (trip_type == '2'):
-            return_date = request.POST.get('ReturnDate')
-            return render(request, 'flight/index.html', {
-                'min_date': min_date,
-                'max_date': max_date,
-                'origin': origin,
-                'destination': destination,
-                'depart_date': depart_date,
-                'seat': seat.lower(),
-                'trip_type': trip_type,
-                'return_date': return_date
-            })
-    else:
-        return render(request, 'flight/index.html', {
-            'min_date': min_date,
-            'max_date': max_date
-        })
 
 def login_view(request):
     if request.method == "POST":
@@ -74,14 +40,14 @@ def login_view(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return HttpResponseRedirect(reverse("index"))
+                return HttpResponseRedirect(reverse("home"))
             else:
                 message = "Invalid username and/or password."
         else:
             message = "Please enter a valid username and password."
     else:
         if request.user.is_authenticated:
-            return HttpResponseRedirect(reverse('index'))
+            return HttpResponseRedirect(reverse('home'))
         else:
             form = LoginForm()
             message = ""
@@ -116,26 +82,14 @@ def register_view(request):
                 "message": "Username already taken."
             })
         login(request, user)
-        return HttpResponseRedirect(reverse("index"))
+        return HttpResponseRedirect(reverse("home"))
     else:
         return render(request, "flight/register.html")
 
 
 def logout_view(request):
     logout(request)
-    return HttpResponseRedirect(reverse("index"))
-
-
-def query(request, q):
-    places = Place.objects.all()
-    filters = []
-    q = q.lower()
-    for place in places:
-        if (q in place.city.lower()) or (q in place.airport.lower()) or (q in place.code.lower()) or (
-                q in place.country.lower()):
-            filters.append(place)
-    return JsonResponse([{'code': place.code, 'city': place.city, 'country': place.country} for place in filters],
-                        safe=False)
+    return HttpResponseRedirect(reverse("home"))
 
 
 @csrf_exempt
