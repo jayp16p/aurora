@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.typekit.net/cav5lva.css">
-   {% comment %} <link rel="stylesheet" href="{% static 'css/layout_style.css' %}">{% endcomment %}
+    {% comment %} <link rel="stylesheet" href="{% static 'css/layout_style.css' %}">{% endcomment %}
     <link rel="icon" type="image/ico" href="/static/img/favicon2.ico">
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
@@ -33,7 +33,7 @@
 {% endblock %}
 <div class="container-fluid">
     <nav class="navbar navbar-expand-lg navbar-light">
-        <a class="navbar-brand" href="{% url 'home' %}">
+        <a class="navbar-brand" href="{% url 'index' %}">
             <img src="{% static 'img/icon_logo2.png' %}" height="34" alt="">
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,7 +43,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item {% if not page %}active{% endif %}">
-                    <a class="nav-link" href="{% url 'home' %}">Home</a>
+                    <a class="nav-link" href="{% url 'index' %}">Home</a>
                 </li>
                 <li class="nav-item {% if page == 'bookings' %}active{% endif %}">
                     <a class="nav-link" href="{% url 'bookings' %}">My Bookings</a>
@@ -96,66 +96,7 @@
         {% block body %}{% endblock %}
     </main>
 
-    <footer class="footer">
-        <div class="parallax_background parallax-window" data-parallax="scroll"
-             data-image-src="{% static 'img/contact.jpg' %}" data-speed="0.8"></div>
-        <div class="container">
 
-            <div class="row footer_contact_row">
-                <div class="col-xl-10 offset-xl-1">
-                    <div class="row">
-
-                        <!-- Footer Contact Item -->
-                        <div class="col-xl-4 footer_contact_col">
-                            <div class="footer_contact_item d-flex flex-column align-items-center justify-content-start text-center">
-                                <div class="footer_contact_icon"><img src="{% static 'img/sign.svg' %}" alt=""></div>
-                                <div class="footer_contact_title">give us a call</div>
-                                <div class="footer_contact_list">
-                                    <ul>
-                                        <li>Office Landline: +1 226 987 1243</li>
-                                        <li>Mobile: +1 226 984 3476</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Footer Contact Item -->
-                        <div class="col-xl-4 footer_contact_col">
-                            <div class="footer_contact_item d-flex flex-column align-items-center justify-content-start text-center">
-                                <div class="footer_contact_icon"><img src="{% static 'img/trekking.svg' %}" alt="">
-                                </div>
-                                <div class="footer_contact_title">come & drop by</div>
-                                <div class="footer_contact_list">
-                                    <ul style="max-width:190px">
-                                        <li>27, University Avenue, Windsor</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Footer Contact Item -->
-                        <div class="col-xl-4 footer_contact_col">
-                            <div class="footer_contact_item d-flex flex-column align-items-center justify-content-start text-center">
-                                <div class="footer_contact_icon"><img src="{% static 'img/around.svg' %}" alt=""></div>
-                                <div class="footer_contact_title">send us a message</div>
-                                <div class="footer_contact_list">
-                                    <ul>
-                                        <li>contact@auroraadventures.com</li>
-                                        <li>help@auroraadventures.com</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div style="background-color: black;" class="col text-center">
-            Copyright &copy;<script>document.write(new Date().getFullYear());</script>
-            All rights reserved by Aurora Adventures
-        </div>
-    </footer>
 
     {% comment %}    <footer>
         <div class="container">
@@ -200,7 +141,66 @@
         </div>
     </footer>{% endcomment %}
 </div>
+<footer class="footer">
+    <div class="parallax_background parallax-window" data-parallax="scroll"
+         data-image-src="{% static 'img/contact.jpg' %}" data-speed="0.8"></div>
+    <div class="container">
 
+        <div class="row footer_contact_row">
+            <div class="col-xl-10 offset-xl-1">
+                <div class="row">
+
+                    <!-- Footer Contact Item -->
+                    <div class="col-xl-4 footer_contact_col">
+                        <div class="footer_contact_item d-flex flex-column align-items-center justify-content-start text-center">
+                            <div class="footer_contact_icon"><img src="{% static 'img/sign.svg' %}" alt=""></div>
+                            <div class="footer_contact_title">give us a call</div>
+                            <div class="footer_contact_list">
+                                <ul>
+                                    <li>Office Landline: +1 226 987 1243</li>
+                                    <li>Mobile: +1 226 984 3476</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer Contact Item -->
+                    <div class="col-xl-4 footer_contact_col">
+                        <div class="footer_contact_item d-flex flex-column align-items-center justify-content-start text-center">
+                            <div class="footer_contact_icon"><img src="{% static 'img/trekking.svg' %}" alt="">
+                            </div>
+                            <div class="footer_contact_title">come & drop by</div>
+                            <div class="footer_contact_list">
+                                <ul style="max-width:190px">
+                                    <li>27, University Avenue, Windsor</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer Contact Item -->
+                    <div class="col-xl-4 footer_contact_col">
+                        <div class="footer_contact_item d-flex flex-column align-items-center justify-content-start text-center">
+                            <div class="footer_contact_icon"><img src="{% static 'img/around.svg' %}" alt=""></div>
+                            <div class="footer_contact_title">send us a message</div>
+                            <div class="footer_contact_list">
+                                <ul>
+                                    <li>contact@auroraadventures.com</li>
+                                    <li>help@auroraadventures.com</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="background-color: black;" class="col text-center">
+        Copyright &copy;<script>document.write(new Date().getFullYear());</script>
+        All rights reserved by Aurora Adventures
+    </div>
+</footer>
 <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
 <script src="{% static 'styles/bootstrap4/popper.js' %}"></script>
 <script src="{% static 'styles/bootstrap4/bootstrap.min.js' %}"></script>
