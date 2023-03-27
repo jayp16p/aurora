@@ -1,8 +1,0 @@
-,origin,destination,depart_time,depart_weekday,duration,arrival_time,arrival_weekday,flight_no,airline_code,airline,economy_fare,business_fare,first_fare
-0,YYZ,YYC,08:00:00,2,02:10:00,10:10:00,2,G8334,G8,Air Canada,458,800,1500
-1,YYC,YYZ,09:15:00,1,02:30:00,11:45:00,1,AC221,G65,Flair,490,940,1630
-2,YLW,YOW,08:00:00,5,02:30:00,10:10:00,5,AC521,G12,Flair,590,900,1230
-3,YOW,YYZ,07:00:00,4,02:30:00,09:30:00,4,AC333,G32,Air Canada,478,750,1600
-4,YEG,YYC,06:00:00,0,02:30:00,08:30:00,0,AC874,G54,Rogue,630,980,1340
-5,YYC,YLW,10:00:00,2,02:30:00,12:30:00,2,AC335,G76,Rogue,500,852,1450
-6,YYZ,YEG,14:00:00,3,02:30:00,16:30:00,3,G325,G10,Air Canada,600,790,1800

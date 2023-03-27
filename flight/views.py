@@ -20,27 +20,12 @@ from django.contrib.auth import authenticate, login
 from django.shortcuts import render, HttpResponseRedirect, reverse
 from .forms import LoginForm
 from capstone.utils import render_to_pdf, createticket
-from flight.utils import createWeekDays, addPlaces, addDomesticFlights, addInternationalFlights
 # Fee and Surcharge variable
 from .constant import FEE
 from .models import *
 from .forms import ContactForm
 User = get_user_model()
 
-try:
-    if len(Week.objects.all()) == 0:
-        createWeekDays()
-
-    if len(Place.objects.all()) == 0:
-        addPlaces()
-
-    if len(Flight.objects.all()) == 0:
-        print("Do you want to add flights in the Database? (y/n)")
-        if input().lower() in ['y', 'yes']:
-            addDomesticFlights()
-            addInternationalFlights()
-except:
-    pass
 
 
 # Create your views here.
@@ -79,28 +64,6 @@ def index(request):
             'min_date': min_date,
             'max_date': max_date
         })
-
-
-# def login_view(request):
-#     if request.method == "POST":
-#         username = request.POST["username"]
-#         password = request.POST["password"]
-#         user = authenticate(request, username=username, password=password)
-#         if user is not None:
-#             login(request, user)
-#             return HttpResponseRedirect(reverse("index"))
-#
-#         else:
-#             return render(request, "flight/login.html", {
-#                 "message": "Invalid username and/or password."
-#             })
-#     else:
-#         if request.user.is_authenticated:
-#             return HttpResponseRedirect(reverse('index'))
-#         else:
-#             return render(request, "flight/login.html")
-
-
 
 def login_view(request):
     if request.method == "POST":
@@ -311,9 +274,7 @@ def review(request):
             flight2ddate = datetime(int(date2.split('-')[2]), int(date2.split('-')[1]), int(date2.split('-')[0]),
                                     flight2.depart_time.hour, flight2.depart_time.minute)
             flight2adate = (flight2ddate + flight2.duration)
-        # print("//////////////////////////////////")
-        # print(f"flight1ddate: {flight1adate-flight1ddate}")
-        # print("//////////////////////////////////")
+
         if round_trip:
             return render(request, "flight/book.html", {
                 'flight1': flight1,
