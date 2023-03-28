@@ -31,7 +31,7 @@
 <body>
 {% block parentBody %}
 {% endblock %}
-<div class="container-fluid">
+{#<div class="container-fluid">#}
     <nav class="navbar navbar-expand-lg navbar-light">
         <a class="navbar-brand" href="{% url 'home' %}">
             <img src="{% static 'img/icon_logo2.png' %}" height="34" alt="">
@@ -98,7 +98,8 @@
 
 
 
-</div><br/>
+{#</div>#}
+<br/>
 <footer class="footer">
     <div class="parallax_background parallax-window" data-parallax="scroll"
          data-image-src="{% static 'img/contact.jpg' %}" data-speed="0.8"></div>
