@@ -1,12 +1,13 @@
 from io import BytesIO
 from django.http import HttpResponse
 from django.template.loader import get_template
-
 from flight.models import *
 import secrets
 from datetime import datetime, timedelta
 from xhtml2pdf import pisa
 from flight.constant import FEE
+
+
 
 def render_to_pdf(template_src, context_dict={}):
     template = get_template(template_src)

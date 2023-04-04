@@ -41,12 +41,6 @@
                     <input type="hidden" name="ref" value="{{ticket1.ref_no}}">
                     <button type="submit" class="btn btn-outline-primary">Print Ticket ({{ticket1.flight.origin.code}} to {{ticket1.flight.destination.code}})</button>
                 </form>
-                {% if ticket2 %}
-                    <form action="{% url 'getticket' %}" method="get" target="_blank">
-                        <input type="hidden" name="ref" value="{{ticket2.ref_no}}">
-                        <button type="submit" class="btn btn-outline-dark">Print Ticket ({{ticket2.flight.origin.code}} to {{ticket2.flight.destination.code}})</button>
-                    </form>
-                {% endif %}
             </div>
         </div>
     </section>

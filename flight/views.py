@@ -16,7 +16,7 @@ from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.views.decorators.csrf import csrf_exempt
-
+from django.utils import timezone
 from capstone.utils import render_to_pdf, createticket
 from .constant import FEE
 from .forms import ContactForm
@@ -357,13 +357,7 @@ def payment(request):
 
 def ticket_data(request, ref):
     ticket = Ticket.objects.get(ref_no=ref)
-    return JsonResponse({
-        'ref': ticket.ref_no,
-        'from': ticket.flight.origin.code,
-        'to': ticket.flight.destination.code,
-        'flight_date': ticket.flight_ddate,
-        'status': ticket.status
-    })
+    return JsonResponse({'ref': ticket.ref_no,'from': ticket.flight.origin.code,'to': ticket.flight.destination.code,'flight_date': ticket.flight_ddate,'status': ticket.status})
 
 
 @csrf_exempt
@@ -381,10 +375,7 @@ def get_ticket(request):
 def bookings(request):
     if request.user.is_authenticated:
         tickets = Ticket.objects.filter(user=request.user).order_by('-booking_date')
-        return render(request, 'flight/bookings.html', {
-            'page': 'bookings',
-            'tickets': tickets
-        })
+        return render(request, 'flight/bookings.html', {'page': 'bookings', 'tickets': tickets})
     else:
         return HttpResponseRedirect(reverse('login'))
 
@@ -394,21 +385,15 @@ def cancel_ticket(request):
     if request.method == 'POST':
         if request.user.is_authenticated:
             ref = request.POST['ref']
-            try:
-                ticket = Ticket.objects.get(ref_no=ref)
-                if ticket.user == request.user:
-                    ticket.status = 'CANCELLED'
-                    ticket.save()
-                    return JsonResponse({'success': True})
-                else:
-                    return JsonResponse({
-                        'success': False,
-                        'error': "User unauthorised"
-                    })
-            except Exception as e:
-                return JsonResponse({
+            ticket = Ticket.objects.get(ref_no=ref)
+            if ticket.user == request.user:
+                ticket.status = 'CANCELLED'
+                ticket.save()
+                return HttpResponse({'success': True})
+            else:
+                return HttpResponse({
                     'success': False,
-                    'error': e
+                    'error': "User unauthorised"
                 })
         else:
             return HttpResponse("User unauthorised")
