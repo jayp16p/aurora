@@ -16,14 +16,15 @@ from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.views.decorators.csrf import csrf_exempt
-from django.utils import timezone
-from capstone.utils import render_to_pdf, createticket
-from .constant import FEE
+
+from capstone.utils import render_to_pdf, generate_booking
+from .constant import TAX
 from .forms import ContactForm
 from .forms import LoginForm
 from .models import *
 
 User = get_user_model()
+
 
 def login_view(request):
     if request.method == "POST":
@@ -49,6 +50,7 @@ def login_view(request):
         "form": form,
         "message": message
     })
+
 
 def register_view(request):
     if request.method == "POST":
@@ -224,7 +226,7 @@ def review(request):
             flight2adate = (flight2ddate + flight2.duration)
 
         if round_trip:
-            return render(request, "flight/book.html", {
+            return render(request, "flight/book_summary.html", {
                 'flight1': flight1,
                 'flight2': flight2,
                 "flight1ddate": flight1ddate,
@@ -232,87 +234,100 @@ def review(request):
                 "flight2ddate": flight2ddate,
                 "flight2adate": flight2adate,
                 "seat": seat,
-                "fee": FEE
+                "fee": TAX
             })
-        return render(request, "flight/book.html", {
+        return render(request, "flight/book_summary.html", {
             'flight1': flight1,
             "flight1ddate": flight1ddate,
             "flight1adate": flight1adate,
             "seat": seat,
-            "fee": FEE
+            "fee": TAX
         })
     else:
         return HttpResponseRedirect(reverse("login"))
 
 
-def book(request):
+def book_summary(request):
+    # Check if the request method is POST
     if request.method == 'POST':
+        # Check if the user is authenticated
         if request.user.is_authenticated:
-            flight_1 = request.POST.get('flight1')
-            flight_1date = request.POST.get('flight1Date')
-            flight_1class = request.POST.get('flight1Class')
-            f2 = False
             if request.POST.get('flight2'):
-                flight_2 = request.POST.get('flight2')
-                flight_2date = request.POST.get('flight2Date')
-                flight_2class = request.POST.get('flight2Class')
-                f2 = True
-            countrycode = request.POST['countryCode']
-            mobile = request.POST['mobile']
-            email = request.POST['email']
-            flight1 = Flight.objects.get(id=flight_1)
-            if f2:
-                flight2 = Flight.objects.get(id=flight_2)
-            passengerscount = request.POST['passengersCount']
+                # Get details of the arrival flight
+                arrival_flight = request.POST.get('flight2')
+                arrival_flight_date = request.POST.get('flight2Date')
+                arrival_f_class = request.POST.get('flight2Class')
+                round_trip = True
+                arrival_flight_obj = Flight.objects.get(id=arrival_flight)
+
+            # Get details of the departure flight
+            departure_flight = request.POST.get('flight1')
+            departure_flight_date = request.POST.get('flight1Date')
+            departure_f_class = request.POST.get('flight1Class')
+            # Check if round trip is selected
+            round_trip = False
+
+            # Get customer information
+            mobile = request.POST['mobile'].strip()
+            country_code = request.POST['countryCode'].strip()
+            email_address = request.POST['email'].strip()
+
+            # Get Flight objects for the departure and arrival flights
+            departure_flight_obj = Flight.objects.get(id=departure_flight)
+
+            # Get passenger count and details of each passenger
+            passengers_count = request.POST['passengersCount']
             passengers = []
-            for i in range(1, int(passengerscount) + 1):
-                fname = request.POST[f'passenger{i}FName']
-                lname = request.POST[f'passenger{i}LName']
-                gender = request.POST[f'passenger{i}Gender']
-                passengers.append(Passenger.objects.create(first_name=fname, last_name=lname, gender=gender.lower()))
-            coupon = request.POST.get('coupon')
+            for i in range(1, int(passengers_count) + 1):
+                first_name = request.POST[f'passenger{i}FName'].strip()
+                last_name = request.POST[f'passenger{i}LName'].strip()
+                gender = request.POST[f'passenger{i}Gender'].strip().lower()
+                passenger = Passenger(first_name=first_name, last_name=last_name, gender=gender)
+                passenger.save()
+                passengers.append(passenger)
 
+            # Get coupon code, if any
+            coupon = request.POST.get('coupon', '').strip()
+
+            # Calculate fare for the flight(s)
+            fare_dict = {
+                'Economy': departure_flight_obj.economy_fare * int(passengers_count),
+                'Business': departure_flight_obj.business_fare * int(passengers_count),
+                'First': departure_flight_obj.first_fare * int(passengers_count),
+            }
+            fare = fare_dict.get(departure_f_class, 0)
+            if round_trip:
+                fare += fare_dict.get(arrival_f_class, 0)
+
+            # Create tickets for the flight(s) and passenger(s)
             try:
-                ticket1 = createticket(request.user, passengers, passengerscount, flight1, flight_1date, flight_1class,
-                                       coupon, countrycode, email, mobile)
-                if f2:
-                    ticket2 = createticket(request.user, passengers, passengerscount, flight2, flight_2date,
-                                           flight_2class, coupon, countrycode, email, mobile)
-
-                if (flight_1class == 'Economy'):
-                    if f2:
-                        fare = (flight1.economy_fare * int(passengerscount)) + (
-                                    flight2.economy_fare * int(passengerscount))
-                    else:
-                        fare = flight1.economy_fare * int(passengerscount)
-                elif (flight_1class == 'Business'):
-                    if f2:
-                        fare = (flight1.business_fare * int(passengerscount)) + (
-                                    flight2.business_fare * int(passengerscount))
-                    else:
-                        fare = flight1.business_fare * int(passengerscount)
-                elif (flight_1class == 'First'):
-                    if f2:
-                        fare = (flight1.first_fare * int(passengerscount)) + (flight2.first_fare * int(passengerscount))
-                    else:
-                        fare = flight1.first_fare * int(passengerscount)
+                oneway_ticket = generate_booking(request.user, passengers, passengers_count, departure_flight_obj,
+                                                 departure_flight_date, departure_f_class, coupon, country_code,
+                                                 email_address, mobile)
+                if round_trip:
+                    twoway_ticket = generate_booking(request.user, passengers, passengers_count, arrival_flight_obj,
+                                                     arrival_flight_date, arrival_f_class, coupon, country_code,
+                                                     email_address, mobile)
             except Exception as e:
-                return HttpResponse(e)
+                return HttpResponse(f"There was an error while creating your ticket: {str(e)}")
 
-            if f2:  ##
-                return render(request, "flight/payment.html", {  ##
-                    'fare': fare + FEE,  ##
-                    'ticket': ticket1.id,  ##
-                    'ticket2': ticket2.id  ##
-                })  ##
+            # Render payment page with ticket details and fare
+            if round_trip:
+                return render(request, "flight/payment.html", {
+                    'fare': fare + TAX,
+                    'ticket': oneway_ticket.id,
+                    'ticket2': twoway_ticket.id
+                })
             return render(request, "flight/payment.html", {
-                'fare': fare + FEE,
-                'ticket': ticket1.id
+                'fare': fare + TAX,
+                'ticket': oneway_ticket.id
             })
         else:
+            # Redirect to login page if user is not authenticated
             return HttpResponseRedirect(reverse("login"))
     else:
-        return HttpResponse("Method must be post.")
+        # Return error message if request method is not POST
+        return HttpResponse("Method needs to be defined as a POST method.")
 
 
 def payment(request):
@@ -357,7 +372,13 @@ def payment(request):
 
 def ticket_data(request, ref):
     ticket = Ticket.objects.get(ref_no=ref)
-    return JsonResponse({'ref': ticket.ref_no,'from': ticket.flight.origin.code,'to': ticket.flight.destination.code,'flight_date': ticket.flight_ddate,'status': ticket.status})
+    return JsonResponse({
+        'ref': ticket.ref_no,
+        'from': ticket.flight.origin.code,
+        'to': ticket.flight.destination.code,
+        'flight_date': ticket.flight_ddate,
+        'status': ticket.status
+    })
 
 
 @csrf_exempt
@@ -375,7 +396,10 @@ def get_ticket(request):
 def bookings(request):
     if request.user.is_authenticated:
         tickets = Ticket.objects.filter(user=request.user).order_by('-booking_date')
-        return render(request, 'flight/bookings.html', {'page': 'bookings', 'tickets': tickets})
+        return render(request, 'flight/bookings.html', {
+            'page': 'bookings',
+            'tickets': tickets
+        })
     else:
         return HttpResponseRedirect(reverse('login'))
 
@@ -385,15 +409,21 @@ def cancel_ticket(request):
     if request.method == 'POST':
         if request.user.is_authenticated:
             ref = request.POST['ref']
-            ticket = Ticket.objects.get(ref_no=ref)
-            if ticket.user == request.user:
-                ticket.status = 'CANCELLED'
-                ticket.save()
-                return HttpResponse({'success': True})
-            else:
-                return HttpResponse({
+            try:
+                ticket = Ticket.objects.get(ref_no=ref)
+                if ticket.user == request.user:
+                    ticket.status = 'CANCELLED'
+                    ticket.save()
+                    return JsonResponse({'success': True})
+                else:
+                    return JsonResponse({
+                        'success': False,
+                        'error': "User unauthorised"
+                    })
+            except Exception as e:
+                return JsonResponse({
                     'success': False,
-                    'error': "User unauthorised"
+                    'error': e
                 })
         else:
             return HttpResponse("User unauthorised")
@@ -453,6 +483,7 @@ def password_reset_request(request):
     return render(request=request, template_name="flight/password_reset.html",
                   context={"password_reset_form": password_reset_form})
 
+
 def contact(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
@@ -468,8 +499,10 @@ def contact(request):
         form = ContactForm()
     return render(request, 'flight/contact.html', {'form': form})
 
+
 def about_us(request):
     return render(request, 'flight/about.html')
+
 
 def home(request):
     return render(request, 'flight/landingPage.html')

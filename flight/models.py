@@ -43,20 +43,20 @@ class Flight(models.Model):
         return f"{self.origin} to {self.destination}"
 
 
-
-GENDER = (
-    ('male','MALE'),    #(actual_value, human_readable_value)
-    ('female','FEMALE')
-)
-
 class Passenger(models.Model):
-    first_name = models.CharField(max_length=64, blank=True)
-    last_name = models.CharField(max_length=64, blank=True)
-    gender = models.CharField(max_length=20, choices=GENDER, blank=True)
+    MALE = 'male'
+    FEMALE = 'female'
+    GENDER_CHOICES = (
+        (MALE, 'Male'),
+        (FEMALE, 'Female'),
+    )
+
+    first_name = models.CharField(max_length=40, blank=True)
+    last_name = models.CharField(max_length=40, blank=True)
+    gender = models.CharField(max_length=6, choices=GENDER_CHOICES, blank=True)
 
     def __str__(self):
-        return f"Passenger: {self.first_name} {self.last_name}, {self.gender}"
-
+        return f"Passenger: {self.first_name} {self.last_name}"
 
 
 SEAT_CLASS = (

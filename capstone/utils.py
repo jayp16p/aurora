@@ -1,13 +1,12 @@
 from io import BytesIO
 from django.http import HttpResponse
 from django.template.loader import get_template
+
 from flight.models import *
 import secrets
 from datetime import datetime, timedelta
 from xhtml2pdf import pisa
-from flight.constant import FEE
-
-
+from flight.constant import TAX
 
 def render_to_pdf(template_src, context_dict={}):
     template = get_template(template_src)
@@ -19,7 +18,7 @@ def render_to_pdf(template_src, context_dict={}):
     return None
 
 
-def createticket(user,passengers,passengerscount,flight1,flight_1date,flight_1class,coupon,countrycode,email,mobile):
+def generate_booking(user,passengers,passengerscount,flight1,flight_1date,flight_1class,coupon,countrycode,email,mobile):
     ticket = Ticket.objects.create()
     ticket.user = user
     ticket.ref_no = secrets.token_hex(3).upper()
@@ -41,10 +40,10 @@ def createticket(user,passengers,passengerscount,flight1,flight_1date,flight_1cl
     else:
         ticket.flight_fare = flight1.economy_fare*int(passengerscount)
         ffre = flight1.economy_fare*int(passengerscount)
-    ticket.other_charges = FEE
+    ticket.other_charges = TAX
     if coupon:
         ticket.coupon_used = coupon
-    ticket.total_fare = ffre+FEE+0.0
+    ticket.total_fare = ffre+TAX+0.0
     ticket.seat_class = flight_1class.lower()
     ticket.status = 'PENDING'
     ticket.mobile = ('+'+countrycode+' '+mobile)

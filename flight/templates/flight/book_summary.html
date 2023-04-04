@@ -1,0 +1,211 @@
+{% extends 'flight/layout.html' %}
+{% load static %}
+{% block head %}
+<title>Book | Adventure</title>
+{% endblock %}
+{% block body %}
+<section class="section bg">
+   <form action="{% url 'book_summary' %}" onsubmit="return proceed_payment()" method="POST">
+      {% csrf_token %}
+      <div class="row main-row">
+         <div class="col-xl-6">
+            <div class="booking">
+               <h5 align="center">Booking Summary</h5>
+               <hr>
+               <div class="row booking-div">
+                  <div class="col-md-4">
+                     <div style="color: black">{{ flight1.origin.city }}</div>
+                     <div style="color: black" data-value='{{flight1ddate}}'>Date: {{flight1ddate}}</div>
+                     <div style="color: black">Airport Code: {{flight1.origin.code}}</div>
+                  </div>
+                  <div class="col-md-4" align="center">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="36" height="26" fill="purple" class="bi bi-arrow-right" viewBox="0 0 13 16">
+                        <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                     </svg>
+                  </div>
+                  <div class="col-md-4">
+                     <div style="color: black">{{flight1.destination.city}}</div>
+                     <div style="color: black" data-value='{{flight1adate}}'>Date: {{flight1adate}}</div>
+                     <div style="color: black">Airport Code: {{flight1.destination.code}}</div>
+                  </div>
+               </div>
+               {% if flight2 %}
+               <div style="color: black">
+                  <div>
+                     <div style="color: black">{{flight2.airline}}</div>
+                     <div style="color: black">{{flight2.plane}}</div>
+                  </div>
+               </div>
+               <div class="row booking-div">
+                  <div class="col-md-4">
+                     <div style="color: black">{{ flight2.origin.city }}</div>
+                     <div style="color: black" data-value='{{flight2ddate}}'>Date: {{flight2ddate}}</div>
+                     <div style="color: black">Airport Code: {{flight2.origin.code}}</div>
+                  </div>
+                  <div class="col-md-4" align="center">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="36" height="26" fill="purple" class="bi bi-arrow-right" viewBox="0 0 13 16">
+                        <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                     </svg>
+                  </div>
+                  <div class="col-md-4">
+                     <div style="color: black">{{flight2.destination.city}}</div>
+                     <div style="color: black" data-value='{{flight2adate}}'>Date: {{flight2adate}}</div>
+                     <div style="color: black">Airport Code: {{flight2.destination.code}}</div>
+                  </div>
+               </div>
+               {% endif %}
+               <hr/>
+               <div class="row contact-details-div">
+                  <div class="row form-group">
+                     <div class="col-4 contact"> Email Address
+                        <input type="email" name="email" class="form-control" placeholder="Email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" required title="Please enter a valid email address. Example: viraj@gmail.com">
+                     </div>
+                     <div class="col-4 contact">
+                        Select Country Code
+                        <select name="countryCode" class="custom-select">
+                           <option data-countryCode="CA" value="1">Canada (+1)</option>
+                           <option data-countryCode="US" value="1">USA (+1)</option>
+                        </select>
+                     </div>
+                     <div class="col-4 contact"> Contact No
+                        <input type="text" name="mobile" class="form-control" placeholder="Mobile No" pattern="[0-9]{10}" required title="Please enter a 10-digit mobile number">
+                     </div>
+                  </div>
+               </div>
+               <hr>
+               <input type="hidden" id="passenger_count" name="passengersCount" value="0">
+               <div class="row passenger-style">
+                  <div class="row form-group">
+                     <div class="col">
+                        <input type="text" class="form-control" id="fname" placeholder="First name">
+                     </div>
+                     <div class="col">
+                        <input type="text" class="form-control" id="lname" placeholder="Last name">
+                     </div>
+                     <div class="col">
+                        <div class="form-group row">
+                           <label style="color: black" class="col-sm-1 col-form-label">Gender:</label>
+                           <div class="col-sm-11">
+                              <div class="form-check form-check-inline">
+                                 <input class="form-check-input gender" type="radio" name="gender" id="male" value="male">
+                                 <label class="form-check-label" for="male">Male</label>
+                              </div>
+                              <div class="form-check form-check-inline">
+                                 <input class="form-check-input gender" type="radio" name="gender" id="female" value="female">
+                                 <label class="form-check-label" for="female">Female</label>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <button type="button" class="btn btn-outline-dark mx-auto w-100" onclick="add_passengers()">Add Passengers</button>
+               </div>
+               <div class="passenger_list">
+               </div>
+            </div>
+         </div>
+         <div class="col-xl-6">
+            <div class="price-details">
+               <h5 align="center">Price Summary</h5>
+               <hr>
+               <div class="row base-fare">
+                  <div style="color: black">Base Fare: </div>
+                  <div style="color: black">
+                     {% if seat == 'Economy' %}
+                     CA$
+                     {% if flight2 %}
+                        {{ flight1.economy_fare|floatformat:2 }} + {{ flight2.economy_fare|floatformat:2 }} = {{ flight1.economy_fare|add:flight2.economy_fare|floatformat:2 }}
+                     {% else %}
+                        {{ flight1.economy_fare|floatformat:2 }}
+                     {% endif %}
+                     <input type="hidden" id="basefare" value="{% if flight2 %}{{ flight1.economy_fare|add:flight2.economy_fare|floatformat:2 }}{% else %}{{ flight1.economy_fare|floatformat:2 }}{% endif %}">
+
+                     {% elif seat == 'First' %}
+                     CA$
+                     {% if flight2 %}
+                        {{ flight1.first_fare|floatformat:2 }} + {{ flight2.first_fare|floatformat:2 }} = {{ flight1.first_fare|add:flight2.first_fare|floatformat:2 }}
+                     {% else %}
+                        {{ flight1.first_fare|floatformat:2 }}
+                     {% endif %}
+                     <input type="hidden" id="basefare" value="{% if flight2 %}{{ flight1.first_fare|add:flight2.first_fare|floatformat:2 }}{% else %}{{ flight1.first_fare|floatformat:2 }}{% endif %}">
+
+                     {% elif seat == 'Business' %}
+                     CA$
+                     {% if flight2 %}
+                        {{ flight1.business_fare|floatformat:2 }} + {{ flight2.business_fare|floatformat:2 }} = {{ flight1.business_fare|add:flight2.business_fare|floatformat:2 }}
+                     {% else %}
+                        {{ flight1.business_fare|floatformat:2 }}
+                     {% endif %}
+                     <input type="hidden" id="basefare" value="{% if flight2 %}{{ flight1.business_fare|add:flight2.business_fare|floatformat:2 }}{% else %}{{ flight1.business_fare|floatformat:2 }}{% endif %}">
+                     {% endif %}
+                  </div>
+               </div>
+               <div class="row surcharges">
+                  <div style="color: black">Taxes & Fees: </div>
+                  <div style="color: black">CA$ {{fee|floatformat:2}}</div>
+                  <input type="hidden" id="fee" value="{{fee|floatformat:2}}">
+               </div>
+               <hr>
+               <div style="color: black" class="total-fare">
+                  <div>Final Total Price: </div>
+                  <div>
+                     {% if seat == 'Economy' %}
+                     CA$
+                     {% if flight2 %}
+                        {{flight1.economy_fare | add:flight2.economy_fare | add:fee|floatformat:2}}
+                     {% else %}
+                        {{flight1.economy_fare | add:fee|floatformat:2}}
+                     {% endif %}
+
+                     {% elif seat == 'First' %}
+                     CA$
+                     {% if flight2 %}
+                        {{flight1.first_fare | add:flight2.first_fare | add:fee|floatformat:2}}
+                     {% else %}
+                        {{flight1.first_fare | add:fee|floatformat:2}}
+                     {% endif %}
+
+                     {% elif seat == 'Business' %}
+                     CA$
+                     {% if flight2 %}
+                        {{flight1.business_fare | add:flight2.business_fare | add:fee|floatformat:2}}
+                     {% else %}
+                        {{flight1.business_fare | add:fee|floatformat:2}}
+                     {% endif %}
+                     {% endif %}
+                  </div>
+               </div>
+               <div>
+                  <h5 align="center">Got a coupon?</h5>
+                  <hr>
+                  <div class="row">
+                     <div class="col-10">
+                        <input type="text" name="coupon" class="form-control" placeholder="Enter your Coupon here">
+                     </div>
+                     <div class="col">
+                        <center>
+                           <button type="button" class="btn btn-dark">Apply</button>
+                        </center>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="payment-btn" style="background-color: transparent;">
+               <button type="submit" class="btn btn-dark">Proceed to Checkout</button>
+            </div>
+         </div>
+      </div>
+      <input type="hidden" name="flight1" value="{{flight1.id}}">
+      <input type="hidden" name="flight1Date" value='{{flight1ddate | date:"d-m-Y"}}'>
+      <input type="hidden" name="flight1Class" value="{{seat}}">
+      {% if flight2 %}
+      <input type="hidden" name="flight2" value="{{flight2.id}}">
+      <input type="hidden" name="flight2Class" value="{{seat}}">
+      <input type="hidden" name="flight2Date" value='{{flight2ddate | date:"d-m-Y"}}'>
+      {% endif %}
+   </form>
+   <br/><br/>
+</section>
+<link rel="stylesheet" href="{% static 'css/book_summary.css' %}">
+<script type="text/javascript" src="{% static 'js/book_summary.js' %}"></script>
+{% endblock %}

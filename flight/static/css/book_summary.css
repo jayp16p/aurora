@@ -1,5 +1,5 @@
-.section1{
-    background-color: rgba(10, 0, 0, .05);
+.bg{
+    background-color: rgba(241, 240, 240, 0.87);
 }
 .col-8 > div, .col-4 > div{
     background-color: #fff;
@@ -18,11 +18,11 @@ h5{
     -webkit-text-fill-color: transparent;
 }
 
-.ticket-details, .traveller-details, .seat-map, .price-details, .coupon-code{
+.booking, .traveller-details, .seat-map, .price-details, .coupon-code{
     margin-top: 15px;
     margin-bottom: 15px;
     padding: 13px;
-    border-radius: 8px;
+    border-radius: 1px;
     box-shadow: 0 0 10px rgba(0, 0, 0, .15);
     overflow: hidden;
 }
@@ -31,7 +31,7 @@ h5{
     margin: 0px -13px;
     border-top: 0.5px solid rgba(0,0,0,.1);
 }
-.ticket-details-div{
+.booking-div{
     margin: 13px 10px;
 }
 
@@ -133,7 +133,7 @@ h5{
 .contact-details form{
     flex: 1;
 }
-.ci{
+.contact{
     font-weight: 400;
     color: #4a4a4a;
     font-size: .9em;
@@ -146,14 +146,14 @@ h5{
     color: grey;
     padding-top: 13px;
 }
-.add-traveller-div{
+.passenger-style{
     border: 1px solid lightgrey;
     border-radius: 5px;
     margin: 13px 10px;
     padding: 10px;
     flex-flow: column;
 }
-.add-traveller-div form{
+.passenger-style form{
     flex: 1;
 }
 .note-name{
@@ -291,26 +291,26 @@ h5{
     .coupon-apply{
         padding-right: 0!important;
     }
-    .ticket-details-div{
+    .booking-div{
         margin-left: 0;
         margin-right: 0;
         margin-top: 5px;
         justify-content: space-between;
     }
-    .ticket-details-div > .airline-name{
+    .booking-div > .airline-name{
         display: none;
     }
-    .ticket-details-div .depart-time{
+    .booking-div .depart-time{
         max-width: 36%;
         width: 36%;
         flex: auto;
     }
-    .ticket-details-div .arrival-time{
+    .booking-div .arrival-time{
         max-width: 36%;
         width: 36%;
         flex: auto;
     }
-    .ticket-details-div .time-details{
+    .booking-div .time-details{
         margin-left: 0;
         margin-right: 0;
         width: fit-content;
@@ -321,34 +321,34 @@ h5{
         padding-left: 5px;
         padding-right: 5px;
     }
-    .ticket-details-div .airport{
+    .booking-div .airport{
         
     }
-    .ticket-details-div .time-details{
+    .booking-div .time-details{
         display: flex;
     }
-    .ticket-details-div .time-details > div{
+    .booking-div .time-details > div{
         margin-top: auto;
         margin-bottom: auto;
     }
-    .ticket-details-div .time{
+    .booking-div .time{
         font-size: 1.4em;
     }
-    .ticket-details-div .depart-time{
+    .booking-div .depart-time{
         padding-left: 0;
         padding-right: 10px;
     }
-    .ticket-details-div .arrival-time{
+    .booking-div .arrival-time{
         padding-left: 10px;
         padding-right: 0;
         text-align: right;
     }
-    .ticket-details-div .ddate{
+    .booking-div .ddate{
         font-size: .9em;
         font-weight: normal;
         color: black;
     }
-    .ticket-details-div .adate{
+    .booking-div .adate{
         font-size: .9em;
         font-weight: normal;
         color: black;
